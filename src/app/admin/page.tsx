@@ -17,6 +17,7 @@ import {
   RefreshCw,
   Clock,
   ArrowRight,
+  Database,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { formatPrice, formatDate } from "@/lib/utils";
@@ -43,6 +44,26 @@ export default function AdminDashboardPage() {
     is_featured: false,
   });
   const [submittingProduct, setSubmittingProduct] = useState(false);
+  const [seedingDb, setSeedingDb] = useState(false);
+
+  const handleInitDatabase = async () => {
+    if (!confirm("Inisialisasi tabel dan seed 50 produk ke database?")) return;
+    setSeedingDb(true);
+    try {
+      const res = await fetch("/api/admin/db-init", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message + " Total produk: " + data.total_products);
+        loadAllAdminData();
+      } else {
+        alert(data.error || "Gagal menginisialisasi database.");
+      }
+    } catch {
+      alert("Terjadi kesalahan koneksi.");
+    } finally {
+      setSeedingDb(false);
+    }
+  };
 
   // Redirect if not admin
   useEffect(() => {
@@ -199,6 +220,16 @@ export default function AdminDashboardPage() {
             title="Refresh Data"
           >
             <RefreshCw className="w-4 h-4" />
+          </button>
+
+          <button
+            onClick={handleInitDatabase}
+            disabled={seedingDb}
+            className="px-3.5 py-2.5 rounded-xl border border-stone-200 hover:border-[#F97316] bg-white text-[#111827] font-semibold text-xs flex items-center gap-2 shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+            title="Inisialisasi skema tabel & seed 50 produk ke database cloud"
+          >
+            <Database className="w-4 h-4 text-[#F97316]" />
+            <span>{seedingDb ? "Menginisialisasi..." : "Sync DB (50 Produk)"}</span>
           </button>
 
           <button

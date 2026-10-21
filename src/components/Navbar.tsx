@@ -14,6 +14,7 @@ import {
   LogOut,
   ShieldCheck,
   LogIn,
+  BookOpen,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -148,6 +149,15 @@ export default function Navbar() {
               >
                 <Package className="w-4 h-4 text-stone-500" />
                 <span className="hidden md:inline">Pesanan</span>
+              </Link>
+
+              <Link
+                href="/docs"
+                className="hidden sm:flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 rounded-xl bg-stone-100 hover:bg-orange-50 text-[#374151] hover:text-[#F97316] transition-colors border border-stone-200"
+                title="Buka Dokumentasi Swagger API"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-[#F97316]" />
+                <span>Swagger</span>
               </Link>
 
               {/* Cart Trigger Button */}

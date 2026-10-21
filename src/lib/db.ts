@@ -47,14 +47,22 @@ let inMemoryOrders: Order[] = [
   },
 ];
 
+const dbUrl = (
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.POSTGRES_PRISMA_URL ||
+  "postgresql://postgres:postgres@localhost:5432/fan_commerce"
+).trim().replace(/^["']|["']$/g, "");
+
+const isLocal = dbUrl.includes("localhost") || dbUrl.includes("127.0.0.1");
+
 // Connection pool singleton
 const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL ||
-    "postgresql://postgres:postgres@localhost:5432/fan_commerce",
+  connectionString: dbUrl,
+  ssl: isLocal ? false : { rejectUnauthorized: false },
   max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000, // Quick timeout if database unreachable
+  connectionTimeoutMillis: 5000, // Timeout if database unreachable
 });
 
 // Test connection state cache

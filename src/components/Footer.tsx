@@ -95,6 +95,16 @@ export default function Footer() {
             <h5 className="text-sm font-semibold text-white mb-3">API & Developer</h5>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
+                <Link href="/docs" className="text-[#F97316] font-bold hover:underline flex items-center gap-1.5">
+                  <span>📖 Swagger UI (/docs)</span>
+                </Link>
+              </li>
+              <li>
+                <a href="/api/openapi.json" target="_blank" className="hover:text-white transition-colors">
+                  OpenAPI Spec (JSON)
+                </a>
+              </li>
+              <li>
                 <a href="/api/products" target="_blank" className="hover:text-white transition-colors">
                   API: /api/products
                 </a>
