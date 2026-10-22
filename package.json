@@ -10,6 +10,7 @@
     "db:init": "node scripts/init-db.mjs"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
     "@prisma/client": "^7.10.0",
     "dotenv": "^18.0.5",
     "lucide-react": "^1.52.0",

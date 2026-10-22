@@ -1,4 +1,5 @@
-import { Pool } from "pg";
+import { Pool as PgPool } from "pg";
+import { Pool as NeonPool } from "@neondatabase/serverless";
 import { Category, Product, Order, OrderItem, ProductFilterParams, User, AdminStats, UserRole } from "@/types";
 import { initialCategories, initialProducts } from "./mock-data";
 import { hashPassword } from "./auth";
@@ -54,16 +55,19 @@ const dbUrl = (
   "postgresql://postgres:postgres@localhost:5432/fan_commerce"
 ).trim().replace(/^["']|["']$/g, "");
 
+const isNeon = dbUrl.includes("neon.tech");
 const isLocal = dbUrl.includes("localhost") || dbUrl.includes("127.0.0.1");
 
-// Connection pool singleton
-const pool = new Pool({
-  connectionString: dbUrl,
-  ssl: isLocal ? false : { rejectUnauthorized: false },
-  max: 10,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000, // Timeout if database unreachable
-});
+// Connection pool singleton (Neon Serverless Pool for Cloud, PgPool for Local)
+const pool = isNeon
+  ? (new NeonPool({ connectionString: dbUrl }) as unknown as PgPool)
+  : new PgPool({
+      connectionString: dbUrl,
+      ssl: isLocal ? false : { rejectUnauthorized: false },
+      max: 10,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 5000,
+    });
 
 // Test connection state cache
 let dbConnected: boolean | null = null;
